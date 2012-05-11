@@ -17,4 +17,8 @@ class Episode
     "#{self.season}X#{self.number}"
   end
 
+  def air_date
+    Time.at(@first_aired).strftime("%Y-%m-%d")
+  end
+
 end
