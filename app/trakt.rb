@@ -33,4 +33,12 @@ module Trakt
 
   end
 
+  class Library < Trakt::Base
+
+    def url
+      "#{base_path}/user/library/shows/all.json/#{Trakt::API_KEY}/matsimitsu/extended"
+    end
+
+  end
+
 end

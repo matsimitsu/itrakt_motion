@@ -1,9 +1,17 @@
 class CalendarController < UITableViewController
 
+  def init
+    if super
+      self.tabBarItem = UITabBarItem.alloc.initWithTitle('Calendar', image:UIImage.imageNamed('calendar.png'), tag:1)
+      self.navigationItem.title = "Calendar"
+
+    end
+    self
+  end
+
   def viewDidLoad
     @calendar = []
     view.dataSource = view.delegate = self
-    self.navigationItem.title = "Calendar"
     Dispatch::Queue.concurrent.async do
 
       calendar_request = Trakt::Calendar.new

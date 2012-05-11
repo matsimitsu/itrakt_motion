@@ -1,5 +1,5 @@
-class BroadcastCell < UITableViewCell
-  attr_accessor :index_path, :series_title_and_episode_number, :episode_title, :airtime_and_channel
+class ShowCell < UITableViewCell
+  attr_accessor :index_path, :show_title, :airtime_and_channel
 
   CellID = 'CellIdentifier'
 
@@ -8,24 +8,19 @@ class BroadcastCell < UITableViewCell
   MARGIN_UNDERNEATH_LABEL = 4.0
 
 
-  def self.cellForBroadcast(broadcast, indexPath:indexPath, inTableView:tableView)
-    cell = tableView.dequeueReusableCellWithIdentifier(BroadcastCell::CellID) || BroadcastCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier:CellID)
+  def self.cellForShow(show, indexPath:indexPath, inTableView:tableView)
+    cell = tableView.dequeueReusableCellWithIdentifier(ShowCell::CellID) || ShowCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier:CellID)
     cell.index_path = indexPath
-    cell.fillWithBroadcast(broadcast, inTableView:tableView)
+    cell.fillWithShow(show, inTableView:tableView)
     cell
   end
 
   def initWithStyle(style, reuseIdentifier:cellid)
     if super
-      self.series_title_and_episode_number = UILabel.new
-      self.series_title_and_episode_number.opaque = true
-      self.series_title_and_episode_number.font = UIFont.boldSystemFontOfSize(UIFont.systemFontSize)
-      self.contentView.addSubview series_title_and_episode_number
-
-      self.episode_title = UILabel.new
-      self.episode_title.opaque = true
-      self.episode_title.font = UIFont.systemFontOfSize(UIFont.smallSystemFontSize)
-      self.contentView.addSubview episode_title
+      self.show_title = UILabel.new
+      self.show_title.opaque = true
+      self.show_title.font = UIFont.boldSystemFontOfSize(UIFont.systemFontSize)
+      self.contentView.addSubview show_title
 
       self.airtime_and_channel = UILabel.new
       self.airtime_and_channel.opaque = true
@@ -35,11 +30,9 @@ class BroadcastCell < UITableViewCell
     self
   end
 
-  def fillWithBroadcast(broadcast, inTableView:tableView)
-    show, episode = broadcast[:show], broadcast[:episode]
+  def fillWithShow(show, inTableView:tableView)
 
-    self.series_title_and_episode_number.text = "#{episode.season_and_episode_number} #{show.title}"
-    self.episode_title.text = episode.title
+    self.show_title.text = show.title
     self.airtime_and_channel.text = "#{show.air_time} on #{show.network}"
 
     unless show.poster
@@ -56,7 +49,7 @@ class BroadcastCell < UITableViewCell
             self.imageView.layer.cornerRadius = 2.0;
             #self.imageView.layer.minificationFilter = kCAFilterTrilinear;
 
-            tableView.delegate.reloadRowForBroadcast({:show => show, :episode => episode}, index_path)
+            tableView.delegate.reloadRowForShow(index_path)
           end
         end
       end
@@ -70,12 +63,10 @@ class BroadcastCell < UITableViewCell
 
     # Set colors depending on selected state
     if self.selected?
-      self.series_title_and_episode_number.textColor = UIColor.whiteColor
-      self.episode_title.textColor = UIColor.whiteColor
+      self.show_title.textColor = UIColor.whiteColor
       self.airtime_and_channel.textColor = UIColor.whiteColor
     else
-      self.series_title_and_episode_number.textColor = UIColor.blackColor
-      self.episode_title.textColor = UIColor.grayColor
+      self.show_title.textColor = UIColor.blackColor
       self.airtime_and_channel.textColor = UIColor.grayColor
     end
 
@@ -95,12 +86,7 @@ class BroadcastCell < UITableViewCell
     y += MARGIN
     labelWidth = size.width - x
     labelHeight = UIFont.systemFontSize + MARGIN_UNDERNEATH_LABEL
-    self.series_title_and_episode_number.frame = CGRectMake(x, y, labelWidth, labelHeight)
-
-    # Epsiode title
-    y += labelHeight + MARGIN_UNDERNEATH_LABEL
-    labelHeight = UIFont.smallSystemFontSize + MARGIN_UNDERNEATH_LABEL
-    self.episode_title.frame = CGRectMake(x, y, labelWidth, labelHeight)
+    self.show_title.frame = CGRectMake(x, y, labelWidth, labelHeight)
 
     # Airtime and channel
     y += labelHeight + MARGIN_UNDERNEATH_LABEL
