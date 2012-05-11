@@ -64,13 +64,12 @@ class CalendarController < UITableViewController
 
   def tableView(tableView, didSelectRowAtIndexPath:indexPath)
     broadcast = @calendar[indexPath.section].broadcasts[indexPath.row]
-
-    controller = EpisodeDetailsController.alloc.init
+    controller = EpisodeDetailsController.alloc.initWithNibName("EpisodeDetailsController", bundle:nil)
     navigationController.pushViewController(controller, animated:true)
     controller.showDetailsForBroadcast(broadcast)
   end
 
-  def reloadRowForBroadcast(broadcast, indexPath)
+  def reloadRowForIndexPath(indexPath)
     view.reloadRowsAtIndexPaths([NSIndexPath.indexPathForRow(indexPath.row, inSection:indexPath.section)], withRowAnimation:false)
   end
 

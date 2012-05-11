@@ -1,8 +1,13 @@
 class EpisodeDetailsController < UITableViewController
-  CellID = 'CellIdentifier'
+  CellID = 'EpisodeDetailsCellIdentifier'
   IMAGE_ASPECT_RATIO = 0.679802955665025
   MARGIN = 20
   attr_reader :episode, :show
+
+  attr_accessor :bannerCell, :bannerView
+  attr_accessor :titleAndEpisodeAndSeasonCell, :seenCheckbox, :titleLabel, :episodeAndSeasonLabel
+  attr_accessor :overviewCell, :overviewLabel
+  attr_accessor :showDetailsCell, :showTitleLabel
 
   def viewWillAppear(animated)
     true

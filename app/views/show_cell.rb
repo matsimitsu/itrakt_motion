@@ -49,7 +49,7 @@ class ShowCell < UITableViewCell
             self.imageView.layer.cornerRadius = 2.0;
             #self.imageView.layer.minificationFilter = kCAFilterTrilinear;
 
-            tableView.delegate.reloadRowForShow(index_path)
+            tableView.delegate.reloadRowForIndexPath(index_path)
           end
         end
       end

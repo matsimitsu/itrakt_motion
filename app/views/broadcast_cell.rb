@@ -56,7 +56,7 @@ class BroadcastCell < UITableViewCell
             self.imageView.layer.cornerRadius = 2.0;
             #self.imageView.layer.minificationFilter = kCAFilterTrilinear;
 
-            tableView.delegate.reloadRowForBroadcast({:show => show, :episode => episode}, index_path)
+            tableView.delegate.reloadRowForIndexPath(index_path)
           end
         end
       end

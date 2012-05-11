@@ -51,7 +51,7 @@ class LibraryController < UITableViewController
     ShowCell.cellForShow(show, indexPath:indexPath, inTableView:tableView)
   end
 
-  def reloadRowForShow(indexPath)
+  def reloadRowForIndexPath(indexPath)
     view.reloadRowsAtIndexPaths([NSIndexPath.indexPathForRow(indexPath.row, inSection:indexPath.section)], withRowAnimation:false)
   end
 
