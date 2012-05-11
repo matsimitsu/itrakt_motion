@@ -7,6 +7,7 @@ class Show
     @year = dict['year']
     @title = dict['title']
     @overview = dict['overview']
+    @network = dict['network']
     @runtime = dict['runtime']
     @air_time = dict['air_time']
     @poster_url = dict['images']['poster']

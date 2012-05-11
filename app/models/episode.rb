@@ -13,4 +13,8 @@ class Episode
     @image = nil
   end
 
+  def season_and_episode_number
+    "#{self.season}X#{self.number}"
+  end
+
 end

@@ -3,20 +3,18 @@ class CalendarController < UITableViewController
   def viewDidLoad
     @calendar = []
     view.dataSource = view.delegate = self
-    self.navigationItem.title = "Calendar"
+
     Dispatch::Queue.concurrent.async do
 
       calendar_request = Trakt::Calendar.new
       json = calendar_request.get_json
 
-      if json.any?
-        new_days = []
-        json.each do |dict|
-          new_days << BroadcastDay.new(dict)
-        end
-
-       Dispatch::Queue.main.sync { load_calendar(new_days) }
+      new_days = []
+      json.each do |dict|
+        new_days << BroadcastDay.new(dict)
       end
+
+     Dispatch::Queue.main.sync { load_calendar(new_days) }
     end
     true
   end
@@ -24,6 +22,11 @@ class CalendarController < UITableViewController
   def load_calendar(calendar)
     @calendar = calendar
     view.reloadData
+  end
+
+  def presentError(error)
+    # TODO
+    $stderr.puts error.description
   end
 
   def numberOfSectionsInTableView(tableView)
@@ -46,20 +49,12 @@ class CalendarController < UITableViewController
   end
 
   def tableView(tableView, heightForRowAtIndexPath:indexPath)
-    80
+    BroadcastCell.heightForBroadcast(@calendar[indexPath.section].broadcasts[indexPath.row], tableView.frame.size.width)
   end
 
   def tableView(tableView, cellForRowAtIndexPath:indexPath)
     broadcast = @calendar[indexPath.section].broadcasts[indexPath.row]
     BroadcastCell.cellForBroadcast(broadcast, indexPath:indexPath, inTableView:tableView)
-  end
-
-  def tableView(tableView, didSelectRowAtIndexPath:indexPath)
-    broadcast = @calendar[indexPath.section].broadcasts[indexPath.row]
-
-    controller = EpisodeDetailsController.alloc.init
-    navigationController.pushViewController(controller, animated:true)
-    controller.showDetailsForBroadcast(broadcast)
   end
 
   def reloadRowForBroadcast(broadcast, indexPath)
