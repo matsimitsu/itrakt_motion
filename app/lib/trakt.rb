@@ -9,6 +9,7 @@ module Trakt
     end
 
     def get_json
+      alert('moo', 'nooo')
       error_ptr = Pointer.new(:object)
       data = NSData.alloc.initWithContentsOfURL(NSURL.URLWithString(url), options:NSDataReadingUncached, error:error_ptr)
       unless data

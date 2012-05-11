@@ -1,8 +1,14 @@
 class BroadcastCell < UITableViewCell
-  attr_accessor :index_path
+  attr_accessor :index_path, :series_title_and_episode_number, :episode_title, :airtime_and_channel
 
   CellID = 'CellIdentifier'
   MessageFontSize = 14
+  SmallMessageFontSize = 12
+
+  POSTER_ASPECT_RATIO = 0.679802955665025
+  MARGIN = 8
+  MARGIN_UNDERNEATH_LABEL = 2
+
 
   def self.cellForBroadcast(broadcast, indexPath:indexPath, inTableView:tableView)
     cell = tableView.dequeueReusableCellWithIdentifier(BroadcastCell::CellID) || BroadcastCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier:CellID)
@@ -13,8 +19,20 @@ class BroadcastCell < UITableViewCell
 
   def initWithStyle(style, reuseIdentifier:cellid)
     if super
-      self.textLabel.numberOfLines = 0
-      self.textLabel.font = UIFont.systemFontOfSize(MessageFontSize)
+      self.series_title_and_episode_number = UILabel.new
+      self.series_title_and_episode_number.opaque = true
+      self.series_title_and_episode_number.font = UIFont.systemFontOfSize(MessageFontSize)
+      self.contentView.addSubview series_title_and_episode_number
+
+      self.episode_title = UILabel.new
+      self.episode_title.opaque = true
+      self.episode_title.font = UIFont.systemFontOfSize(SmallMessageFontSize)
+      self.contentView.addSubview episode_title
+
+      self.airtime_and_channel = UILabel.new
+      self.airtime_and_channel.opaque = true
+      self.airtime_and_channel.font = UIFont.systemFontOfSize(SmallMessageFontSize)
+      self.contentView.addSubview airtime_and_channel
     end
     self
   end
@@ -24,15 +42,15 @@ class BroadcastCell < UITableViewCell
 
     self.textLabel.text = show.title
 
-    unless episode.image
+    unless show.poster
       self.imageView.image = nil
       Dispatch::Queue.concurrent.async do
-        image_data = NSData.alloc.initWithContentsOfURL(NSURL.URLWithString(episode.image_url))
+        image_data = NSData.alloc.initWithContentsOfURL(NSURL.URLWithString(show.poster_url))
         if image_data
-          episode.image = UIImage.alloc.initWithData(image_data)
+          show.poster = UIImage.alloc.initWithData(image_data)
 
           Dispatch::Queue.main.sync do
-            self.imageView.image = episode.image
+            self.imageView.image = show.poster
             self.imageView.opaque = true;
             self.imageView.layer.masksToBounds = true;
             self.imageView.layer.cornerRadius = 2.0;
@@ -43,20 +61,37 @@ class BroadcastCell < UITableViewCell
         end
       end
     else
-      self.imageView.image = episode.image
+      self.imageView.image = show.poster
     end
-  end
-
-  def self.heightForBroadcast(broadcast, width)
-    constrain = CGSize.new(width - 95, 1000)
-    size = broadcast[:show].title.sizeWithFont(UIFont.systemFontOfSize(MessageFontSize), constrainedToSize:constrain)
-    [57, size.height + 8].max
   end
 
   def layoutSubviews
     super
-    self.imageView.frame = CGRectMake(2, 2, 88, 49)
-    label_size = self.frame.size
-    self.textLabel.frame = CGRectMake(95, 0, label_size.width - 59, label_size.height)
+
+    size = self.bounds.size;
+    x = 0
+    y = 0
+    imageWidth, labelWidth, labelHeight = 0
+
+    # Poster
+    imageWidth = (size.height * POSTER_ASPECT_RATIO).floor
+    imageSize = CGSizeMake(imageWidth, size.height)
+    self.imageView.frame = CGRectMake(x, y, imageSize.width, imageSize.height)
+
+    # Show title and episode number
+    x += imageWidth + MARGIN
+    y += MARGIN
+    labelWidth = size.width - x
+    labelHeight = systemFontSize + MARGIN_UNDERNEATH_LABEL
+    self.series_title_and_episode_number.frame = CGRectMake(x, y, labelWidth, labelHeight)
+
+    # Epsiode title
+    y += labelHeight + MARGIN_UNDERNEATH_LABEL
+    labelHeight = SmallMessageFontSize + MARGIN_UNDERNEATH_LABEL
+    self.episode_title.frame = CGRectMake(x, y, labelWidth, labelHeight)
+
+    # Airtime and channel
+    y += labelHeight + MARGIN_UNDERNEATH_LABEL
+    self.airtime_and_channel.frame = CGRectMake(x, y, labelWidth, labelHeight)
   end
 end

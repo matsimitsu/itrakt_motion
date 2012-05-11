@@ -9,12 +9,14 @@ class CalendarController < UITableViewController
       calendar_request = Trakt::Calendar.new
       json = calendar_request.get_json
 
-      new_days = []
-      json.each do |dict|
-        new_days << Day.new(dict)
-      end
+      if json.any?
+        new_days = []
+        json.each do |dict|
+          new_days << BroadcastDay.new(dict)
+        end
 
-     Dispatch::Queue.main.sync { load_calendar(new_days) }
+       Dispatch::Queue.main.sync { load_calendar(new_days) }
+      end
     end
     true
   end
@@ -22,11 +24,6 @@ class CalendarController < UITableViewController
   def load_calendar(calendar)
     @calendar = calendar
     view.reloadData
-  end
-
-  def presentError(error)
-    # TODO
-    $stderr.puts error.description
   end
 
   def numberOfSectionsInTableView(tableView)
@@ -49,7 +46,7 @@ class CalendarController < UITableViewController
   end
 
   def tableView(tableView, heightForRowAtIndexPath:indexPath)
-    BroadcastCell.heightForBroadcast(@calendar[indexPath.section].broadcasts[indexPath.row], tableView.frame.size.width)
+    80
   end
 
   def tableView(tableView, cellForRowAtIndexPath:indexPath)

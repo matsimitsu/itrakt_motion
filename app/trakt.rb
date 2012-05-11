@@ -12,12 +12,12 @@ module Trakt
       error_ptr = Pointer.new(:object)
       data = NSData.alloc.initWithContentsOfURL(NSURL.URLWithString(url), options:NSDataReadingUncached, error:error_ptr)
       unless data
-        presentError error_ptr[0]
+        alert('Error:', 'Could not load data from trakt.tv')
         return
       end
       json = NSJSONSerialization.JSONObjectWithData(data, options:0, error:error_ptr)
       unless json
-        presentError error_ptr[0]
+        alert('Error:', 'Could not load data from trakt.tv (Invalid JSON)')
         return
       end
       json
