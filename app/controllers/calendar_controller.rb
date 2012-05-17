@@ -3,8 +3,6 @@ class CalendarController < UITableViewController
   def init
     if super
       self.tabBarItem = UITabBarItem.alloc.initWithTitle('Calendar', image:UIImage.imageNamed('calendar.png'), tag:1)
-      self.navigationItem.title = "Calendar"
-
     end
     self
   end
@@ -12,19 +10,10 @@ class CalendarController < UITableViewController
   def viewDidLoad
     @calendar = []
     view.dataSource = view.delegate = self
-    Dispatch::Queue.concurrent.async do
-
-      calendar_request = Trakt::Calendar.new
-      json = calendar_request.get_json
-
-      if json.any?
-        new_days = []
-        json.each do |dict|
-          new_days << BroadcastDay.new(dict)
-        end
-
-       Dispatch::Queue.main.sync { load_calendar(new_days) }
-      end
+    Trakt::Calendar.ensuring_json do |json|
+      load_calendar(
+        json.map { |dict| BroadcastDay.new(dict) }
+      )
     end
     true
   end

@@ -4,31 +4,64 @@ module Trakt
 
   class Base
 
+    class << self
+      attr_accessor :result
+    end
+
+    def self.ensuring_json(&block)
+      block.call(self.result) if self.result
+      request = self.new
+      request.get_json do |result|
+        self.result = result
+        block.call(result)
+      end
+    end
+
     def base_path
       "http://api.trakt.tv"
     end
 
-    def get_json
-      error_ptr = Pointer.new(:object)
-      data = NSData.alloc.initWithContentsOfURL(NSURL.URLWithString(url), options:NSDataReadingUncached, error:error_ptr)
-      unless data
-        alert('Error:', 'Could not load data from trakt.tv')
-        return
-      end
-      json = NSJSONSerialization.JSONObjectWithData(data, options:0, error:error_ptr)
-      unless json
-        alert('Error:', 'Could not load data from trakt.tv (Invalid JSON)')
-        return
-      end
-      json
+    def credentials
+      "{'username': '#{username}', 'password': '#{user_cache['password_hash']}'}"
     end
 
+    def username
+      user_cache['username']
+    end
+
+    def get_json(default=[], show_errors=true, &block)
+      BubbleWrap::HTTP.post(url, {payload: credentials}) do |response|
+        if response.ok?
+          block.call(BubbleWrap::JSON.parse(response.body.to_str))
+        else
+          alert('error', response.error_message) if show_errors
+          block.call(default)
+        end
+      end
+    end
+  end
+
+  class Authentication < Trakt::Base
+
+    def url
+      "#{base_path}/account/test/#{Trakt::API_KEY}"
+    end
+
+    def validate(&block)
+      get_json({}, false) do |json|
+        if json['status'] && json['status'] == 'success'
+          return block.call(true)
+        else
+          return block.call(false)
+        end
+      end
+    end
   end
 
   class Calendar < Trakt::Base
 
     def url
-      "#{base_path}/calendar/shows.json/#{Trakt::API_KEY}"
+      "#{base_path}/user/calendar/shows.json/#{Trakt::API_KEY}/#{username}"
     end
 
   end
@@ -36,7 +69,7 @@ module Trakt
   class Library < Trakt::Base
 
     def url
-      "#{base_path}/user/library/shows/all.json/#{Trakt::API_KEY}/matsimitsu/extended"
+      "#{base_path}/user/library/shows/all.json/#{Trakt::API_KEY}/#{username}/extended"
     end
 
   end
