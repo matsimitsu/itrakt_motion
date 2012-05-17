@@ -61,7 +61,7 @@ class EpisodeDetailsController < UITableViewController
       if @episode.overview.length > 0
         constrain = CGSize.new(tableView.frame.size.width - (2 * MARGIN), 1000)
 
-        size = @episode.overview.sizeWithFont(UIFont.systemFontOfSize(UIFont.smallSystemFontSize), constrainedToSize:constrain)
+        size = @episode.overview.sizeWithFont(UIFont.systemFontOfSize(UIFont.systemFontSize), constrainedToSize:constrain)
         return size.height + 12.0;
       end
       20

@@ -40,6 +40,13 @@ class LibraryController < UITableViewController
     ShowCell.cellForShow(show, indexPath:indexPath, inTableView:tableView)
   end
 
+  def tableView(tableView, didSelectRowAtIndexPath:indexPath)
+    show = @library[indexPath.row]
+    controller = ShowDetailsController.alloc.initWithNibName("ShowDetailsViewController", bundle:nil)
+    navigationController.pushViewController(controller, animated:true)
+    controller.showDetailsForShow(show)
+  end
+
   def reloadRowForIndexPath(indexPath)
     view.reloadRowsAtIndexPaths([NSIndexPath.indexPathForRow(indexPath.row, inSection:indexPath.section)], withRowAnimation:false)
   end

@@ -74,4 +74,18 @@ module Trakt
 
   end
 
+  class Seasons < Trakt::Base
+    attr_reader :tvdb_id
+
+    def initialize(tvdb_id)
+      @tvdb_id = tvdb_id
+    end
+
+    def url
+      "#{base_path}/show/seasons.json/#{Trakt::API_KEY}/#{username}/#{@tvdb_id}"
+    end
+
+  end
+
 end
+
