@@ -86,6 +86,14 @@ class EpisodeDetailsController < UITableViewController
       self.showTitleLabel.text = @show.title
       return self.showDetailsCell
     end
-
   end
+
+  def tableView(tableView, didSelectRowAtIndexPath:indexPath)
+    if indexPath.row == 3
+      controller = ShowDetailsController.alloc.initWithNibName("ShowDetailsViewController", bundle:nil)
+      navigationController.pushViewController(controller, animated:true)
+      controller.showDetailsForShow(@show)
+    end
+  end
+
 end
