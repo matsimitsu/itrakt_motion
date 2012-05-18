@@ -73,12 +73,19 @@ class ShowDetailsController < UITableViewController
       return self.bannerCell
     when 1
       self.titleLabel.text = @show.title
-      self.seasonsAndEpisodesLabel.text = "fap"
+      self.seasonsAndEpisodesLabel.text = "Show seasons and episodes"
       return self.titleAndSeasonsAndEpisodesCell
     when 2
       self.overviewLabel.text = @show.overview
       return self.overviewCell
     end
-
   end
+
+  def tableView(tableView, didSelectRowAtIndexPath:indexPath)
+    if indexPath.row == 1
+      controller = SeasonsAndEpisodesController.alloc.initWithShow(@show)
+      navigationController.pushViewController(controller, animated:true)
+    end
+  end
+
 end
