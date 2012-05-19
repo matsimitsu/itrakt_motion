@@ -8,10 +8,9 @@ class AuthenticationViewController < UIViewController
 
   def viewWillAppear(animated)
     signingIn = false
-    signedIn = false
+    signedIn = user_cache['username'] != nil
 
     self.usernameField.text = user_cache['username']
-    self.passwordField.text = user_cache['password']
     textDidChange = false
     true
   end
@@ -63,6 +62,8 @@ class AuthenticationViewController < UIViewController
     user_cache['username'] = self.usernameField.text
     user_cache['password'] = self.passwordField.text
 
+    # Happy crashtime begins here
+    # Its something in the trakt::auth
     authentication = Trakt::Authentication.new
     authentication.validate do |valid|
       if valid == true

@@ -50,9 +50,9 @@ module Trakt
     def validate(&block)
       get_json({}, false) do |json|
         if json['status'] && json['status'] == 'success'
-          return block.call(true)
+          block.call(true)
         else
-          return block.call(false)
+          block.call(false)
         end
       end
     end
