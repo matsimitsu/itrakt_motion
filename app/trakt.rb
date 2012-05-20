@@ -2,6 +2,36 @@ module Trakt
 
   API_KEY = 'f05a4d93a7b0838ea46b12a6e86c6cdb'
 
+  class << self
+
+    def sha1(string)
+      cstr = string.cStringUsingEncoding(NSUTF8StringEncoding)
+      #data = NSData.dataWithBytes(cstr, lenght:string.length)
+      uint8_t digest(CC_SHA1_DIGEST_LENGTH)
+      CC_SHA1(cstr.bytes, cstr.length, digest)
+
+      result = NSMutableString.stringWithCapacity(CC_SHA1_DIGEST_LENGTH * 2)
+      CC_SHA1_DIGEST_LENGTH.times do |i|
+        result.appendFormat("%02x", digest[i])
+      end
+      result
+    end
+  end
+
+  #- (void)setApiPassword:(NSString *)password {
+  #  const char *cstr = [password cStringUsingEncoding:NSUTF8StringEncoding];
+  #  NSData *data = [NSData dataWithBytes:cstr length:[password length]];
+#
+  #  uint8_t digest[CC_SHA1_DIGEST_LENGTH];
+  #  CC_SHA1([data bytes], [data length], digest);
+#
+  #  NSMutableString* result = [NSMutableString stringWithCapacity:CC_SHA1_DIGEST_LENGTH * 2];
+  #  for(int i = 0; i < CC_SHA1_DIGEST_LENGTH; i++) {
+  #    [result appendFormat:@"%02x", digest[i]];
+  #  }
+  #  apiPasswordHash = [[result copy] retain];
+  #}
+#
   class Base
 
     class << self
