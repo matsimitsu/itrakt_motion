@@ -5,33 +5,16 @@ module Trakt
   class << self
 
     def sha1(string)
-      cstr = string.cStringUsingEncoding(NSUTF8StringEncoding)
-      #data = NSData.dataWithBytes(cstr, lenght:string.length)
-      uint8_t digest(CC_SHA1_DIGEST_LENGTH)
-      CC_SHA1(cstr.bytes, cstr.length, digest)
+      data = string.dataUsingEncoding(NSUTF8StringEncoding)
+      data.ks_SHA1DigestString
+    end
 
-      result = NSMutableString.stringWithCapacity(CC_SHA1_DIGEST_LENGTH * 2)
-      CC_SHA1_DIGEST_LENGTH.times do |i|
-        result.appendFormat("%02x", digest[i])
-      end
-      result
+    def base64(string)
+      data = string.dataUsingEncoding(NSUTF8StringEncoding)
+      data.base64EncodedStringWithSeparateLines(false)
     end
   end
 
-  #- (void)setApiPassword:(NSString *)password {
-  #  const char *cstr = [password cStringUsingEncoding:NSUTF8StringEncoding];
-  #  NSData *data = [NSData dataWithBytes:cstr length:[password length]];
-#
-  #  uint8_t digest[CC_SHA1_DIGEST_LENGTH];
-  #  CC_SHA1([data bytes], [data length], digest);
-#
-  #  NSMutableString* result = [NSMutableString stringWithCapacity:CC_SHA1_DIGEST_LENGTH * 2];
-  #  for(int i = 0; i < CC_SHA1_DIGEST_LENGTH; i++) {
-  #    [result appendFormat:@"%02x", digest[i]];
-  #  }
-  #  apiPasswordHash = [[result copy] retain];
-  #}
-#
   class Base
 
     class << self
@@ -51,8 +34,14 @@ module Trakt
       "http://api.trakt.tv"
     end
 
-    def credentials
-      "{'username': '#{username}', 'password': '#{user_cache['password_hash']}'}"
+    def headers
+      {
+        "Authorization" => "Basic #{Trakt::base64("#{username}:#{password}")}"
+      }
+    end
+
+    def password
+      user_cache['password_hash']
     end
 
     def username
@@ -60,7 +49,7 @@ module Trakt
     end
 
     def get_json(default=[], show_errors=true, &block)
-      BubbleWrap::HTTP.post(url, {payload: credentials}) do |response|
+      BubbleWrap::HTTP.get(url, {headers: headers}) do |response|
         if response.ok?
           block.call(BubbleWrap::JSON.parse(response.body.to_str))
         else
@@ -79,6 +68,7 @@ module Trakt
 
     def validate(&block)
       get_json({}, false) do |json|
+        p json
         if json['status'] && json['status'] == 'success'
           block.call(true)
         else

@@ -3,9 +3,6 @@ class AppDelegate
   attr_accessor :navigationController, :tabBarController
 
   def application(application, didFinishLaunchingWithOptions:launchOptions)
-    user_cache['username'] = nil
-    p Trakt::sha1('banaan')
-    user_cache['password_hash'] = 'cb3aba22a0db3064c07ee0deef35919e5a4e5661'
     @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
 
     tabBarController.selectedIndex = 0

@@ -1,0 +1,45 @@
+<?xml version='1.0'?>
+<signatures version='0.9'>
+<function name='NewBase64Decode'>
+<arg name='inputBuffer' declared_type='char*' const='true' type='*'/>
+<arg name='length' declared_type='size_t' type='L'/>
+<arg name='outputLength' declared_type='size_t*' type='^I'/>
+<retval declared_type='void*' type='^v'/>
+</function>
+<function name='NewBase64Encode'>
+<arg name='inputBuffer' declared_type='void*' const='true' type='^v'/>
+<arg name='length' declared_type='size_t' type='L'/>
+<arg name='separateLines' declared_type='_Bool' type='B'/>
+<arg name='outputLength' declared_type='size_t*' type='^I'/>
+<retval declared_type='char*' type='*'/>
+</function>
+<class name='KSSHA1Stream'>
+<method selector='SHA1DigestOfContentsOfURL:' class_method='true'>
+<arg name='URL' declared_type='NSURL*' type='@' index='0'/>
+<retval declared_type='NSData*' type='@'/>
+</method>
+<method selector='initWithURL:'>
+<arg name='URL' declared_type='NSURL*' type='@' index='0'/>
+<retval declared_type='id' type='@'/>
+</method>
+</class>
+<class name='NSData'>
+<method selector='base64EncodedString'>
+<retval declared_type='NSString*' type='@'/>
+</method>
+<method selector='base64EncodedStringWithSeparateLines:'>
+<arg name='separateLines' declared_type='BOOL' type='B' index='0'/>
+<retval declared_type='NSString*' type='@'/>
+</method>
+<method selector='dataFromBase64String:' class_method='true'>
+<arg name='aString' declared_type='NSString*' type='@' index='0'/>
+<retval declared_type='NSData*' type='@'/>
+</method>
+<method selector='ks_SHA1Digest'>
+<retval declared_type='NSData*' type='@'/>
+</method>
+<method selector='ks_SHA1DigestString'>
+<retval declared_type='NSString*' type='@'/>
+</method>
+</class>
+</signatures>
