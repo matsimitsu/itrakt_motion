@@ -53,7 +53,7 @@ module Trakt
         if response.ok?
           block.call(BubbleWrap::JSON.parse(response.body.to_str))
         else
-          alert('error', response.error_message) if show_errors
+          alert('Error', response.error_message) if show_errors
           block.call(default)
         end
       end

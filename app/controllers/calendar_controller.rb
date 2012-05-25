@@ -7,13 +7,15 @@ class CalendarController < UITableViewController
     self
   end
 
-  def viewDidLoad
+  def viewWillAppear(animated)
     @calendar = []
-    view.dataSource = view.delegate = self
-    Trakt::Calendar.ensuring_json do |json|
-      load_calendar(
-        json.map { |dict| BroadcastDay.new(dict) }
-      )
+    if user_cache['username'] && !@calendar.any?
+      view.dataSource = view.delegate = self
+      Trakt::Calendar.ensuring_json do |json|
+        load_calendar(
+          json.map { |dict| BroadcastDay.new(dict) }
+        )
+      end
     end
     true
   end

@@ -3,6 +3,7 @@ class AppDelegate
   attr_accessor :navigationController, :tabBarController
 
   def application(application, didFinishLaunchingWithOptions:launchOptions)
+    user_cache['username'] = nil
     @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
 
     tabBarController.selectedIndex = 0

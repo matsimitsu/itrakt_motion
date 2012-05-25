@@ -7,7 +7,7 @@ class LibraryController < UITableViewController
     self
   end
 
-  def viewDidLoad
+  def viewWillAppear(animated)
     @library = []
     view.dataSource = view.delegate = self
     Trakt::Library.ensuring_json do |json|
